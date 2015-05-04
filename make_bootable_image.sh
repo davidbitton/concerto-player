@@ -14,8 +14,12 @@ if [ "`whoami`" != "root" ]; then
 	fi
 fi
 
-mkdiskimage -z -M concerto.img 1024M
-LOOP_DEV=`losetup --show -f concerto.img`
+# drop existimg .img and create a fresh one
+file="concerto.img"
+[[ -f "$file" ]] && rm -f "$file"
+mkdiskimage -z -M "$file" 1024M
+
+LOOP_DEV=`losetup --show -f "$file"`
 PARTITION_NO="p1"
 PARTITION=$LOOP_DEV$PARTITION_NO
 CHROOT_DIR=chroot
@@ -58,6 +62,9 @@ EOF
 # generate a xrandr.sh file for custom xrandr commands
 cat > $MOUNTPOINT/xrandr.sh << EOF
 #!/bin/bash
+xrandr -d :0 --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+xrandr -d :0 --addmode "1920x1080_60.00"
+xrandr -d :0 --output Virtual1 --mode "1920x1080_60.00"
 EOF
 
 # clean up after ourselves

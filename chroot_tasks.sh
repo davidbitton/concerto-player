@@ -32,7 +32,7 @@ apt-get -y install xserver-xorg xserver-xorg-video-all \
 cat > /tmp/install_bandshell.sh <<EOF
 #!/bin/sh -e
 cd /tmp
-git clone git://github.com/concerto/bandshell.git
+git clone http://github.com/concerto/bandshell.git
 cd bandshell
 gem build bandshell.gemspec
 gem install *.gem
@@ -55,9 +55,9 @@ apt-get -y clean
 # set up hostname
 echo concerto-player > /etc/hostname
 
-# create a user account that, when logged in,
+# create a user account if needed that, when logged in,
 # will start the X server and the player
-useradd -m -s `which xinit` concerto
+id -u concerto &>/dev/null || useradd -m -s `which xinit` concerto
 
 # create a .xinitrc that will start fullscreen chromium
 cat > /home/concerto/.xinitrc << "EOF"
